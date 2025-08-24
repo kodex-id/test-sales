@@ -151,7 +151,7 @@ html { scroll-behavior: smooth; }
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(0, 0, 0, 0.12);
-  color: #111827;
+  color: #ffffff;
   display: grid;
   place-items: center;
   font-size: 22px;
@@ -161,7 +161,7 @@ html { scroll-behavior: smooth; }
 }
 
 .slideshow .nav-btn:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.1);
   transform: translateY(-50%) scale(1.05);
 }
 
@@ -184,7 +184,7 @@ html { scroll-behavior: smooth; }
   height: 12px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.45);
   cursor: pointer;
   transition: background 0.25s ease, transform 0.2s ease;
 }
