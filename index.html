@@ -67,7 +67,7 @@
       </div>
       <button data-prev class="nav-btn prev" style="left:10px;">❮</button>
       <button data-next class="nav-btn next" style="right:10px;">❯</button>
-      <div class="slideshow-controls" id="slideshow-top-dots"></div>
+      <div class="slideshow-controls" id="slideshow-top-dots" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;"></div>
     </div>
   </section>
 
@@ -107,12 +107,11 @@
         <p class="mt-1 text-neutral-600">OTR 2025 — pilih model favorit Anda.</p>
       </div>
 
-      <!-- FILTER BAR -->
       <div id="filterBar" class="hidden md:flex gap-2 reveal" data-reveal="fade-in" role="tablist" aria-label="Filter produk">
-        <button data-filter="all" class="filter-btn inline-flex items-center rounded-full px-4 py-2 font-semibold bg-neutral-900/90 text-white ring-1 ring-white/20 hover:bg-neutral-800 transition" aria-pressed="true">Semua</button>
+        <button data-filter="all"  class="filter-btn inline-flex items-center rounded-full px-4 py-2 font-semibold bg-neutral-900/90 text-white ring-1 ring-white/20 hover:bg-neutral-800 transition" aria-pressed="true">Semua</button>
         <button data-filter="city" class="filter-btn inline-flex items-center rounded-full px-4 py-2 font-semibold bg-neutral-900/90 text-white ring-1 ring-white/20 hover:bg-neutral-800 transition" aria-pressed="false">City Car</button>
-        <button data-filter="suv" class="filter-btn inline-flex items-center rounded-full px-4 py-2 font-semibold bg-neutral-900/90 text-white ring-1 ring-white/20 hover:bg-neutral-800 transition" aria-pressed="false">SUV</button>
-        <button data-filter="mpv" class="filter-btn inline-flex items-center rounded-full px-4 py-2 font-semibold bg-neutral-900/90 text-white ring-1 ring-white/20 hover:bg-neutral-800 transition" aria-pressed="false">MPV</button>
+        <button data-filter="suv"  class="filter-btn inline-flex items-center rounded-full px-4 py-2 font-semibold bg-neutral-900/90 text-white ring-1 ring-white/20 hover:bg-neutral-800 transition" aria-pressed="false">SUV</button>
+        <button data-filter="mpv"  class="filter-btn inline-flex items-center rounded-full px-4 py-2 font-semibold bg-neutral-900/90 text-white ring-1 ring-white/20 hover:bg-neutral-800 transition" aria-pressed="false">MPV</button>
       </div>
     </div>
 
@@ -198,15 +197,10 @@
             </div>
           </div>
 
-          <!-- PILIHAN WARNA -->
+          <!-- PILIHAN WARNA (diisi dinamis oleh JS sesuai model) -->
           <div class="grid gap-2">
             <label class="text-sm text-neutral-600">Warna</label>
-            <select name="warna" class="ipt">
-              <option value="Biru">Biru</option>
-              <option value="Merah">Merah</option>
-              <option value="Hitam">Hitam</option>
-              <option value="Putih">Putih</option>
-            </select>
+            <select name="warna" class="ipt"></select>
           </div>
 
           <button class="mt-2 btn btn--primary" type="submit">Kirim via WhatsApp</button>
@@ -272,14 +266,14 @@
 
   <script src="app.js"></script>
 
-  <!-- slider init (tetap) -->
+  <!-- Slider init -->
   <script>
   function initSlider(rootId, autoMs = 4000) {
     const root = document.getElementById(rootId);
     if (!root) return;
-    const slidesWrap = root.querySelector('.slides');
+    const wraps = root.querySelector('.slides');
     const images = root.querySelectorAll('.slide');
-    const dotsContainer = root.querySelector('.slideshow-controls');
+    const dots = root.querySelector('.slideshow-controls');
     const btnPrev = root.querySelector('[data-prev]');
     const btnNext = root.querySelector('[data-next]');
 
@@ -287,37 +281,32 @@
 
     images.forEach((_, i) => {
       const dot = document.createElement('button');
-      dot.className = 'dot';
-      dot.type = 'button';
+      dot.className = 'dot'; dot.type = 'button';
       dot.setAttribute('aria-label', `Slide ${i + 1}`);
       dot.addEventListener('click', () => go(i));
-      dotsContainer?.appendChild(dot);
+      dots?.appendChild(dot);
     });
 
-    function updateDots() {
-      dotsContainer?.querySelectorAll('.dot').forEach((d, i) =>
-        d.classList.toggle('active', i === index)
-      );
-    }
-    function show() { slidesWrap.style.transform = `translateX(-${index * 100}%)`; updateDots(); }
-    function go(i) { index = (i + images.length) % images.length; show(); restart(); }
-    function next() { go(index + 1); }
-    function prev() { go(index - 1); }
+    function updateDots(){ dots?.querySelectorAll('.dot').forEach((d,i)=> d.classList.toggle('active', i===index)); }
+    function show(){ wraps.style.transform = `translateX(-${index * 100}%)`; updateDots(); }
+    function go(i){ index = (i + images.length) % images.length; show(); restart(); }
+    function next(){ go(index+1); }
+    function prev(){ go(index-1); }
 
     btnNext?.addEventListener('click', next);
     btnPrev?.addEventListener('click', prev);
 
-    function start() { timer = setInterval(() => !paused && next(), autoMs); }
-    function stop() { clearInterval(timer); }
-    function restart() { stop(); start(); }
+    function start(){ timer = setInterval(()=> !paused && next(), autoMs); }
+    function stop(){ clearInterval(timer); }
+    function restart(){ stop(); start(); }
 
-    root.addEventListener('mouseenter', () => paused = true);
-    root.addEventListener('mouseleave', () => paused = false);
+    root.addEventListener('mouseenter', ()=> paused = true);
+    root.addEventListener('mouseleave', ()=> paused = false);
 
-    let startX = 0, dx = 0;
-    root.addEventListener('touchstart', e => { startX = e.touches[0].clientX; dx = 0; }, { passive: true });
-    root.addEventListener('touchmove', e => { dx = e.touches[0].clientX - startX; }, { passive: true });
-    root.addEventListener('touchend', () => { if (Math.abs(dx) > 50) (dx < 0 ? next() : prev()); });
+    let startX=0, dx=0;
+    root.addEventListener('touchstart', e=>{ startX = e.touches[0].clientX; dx=0; }, {passive:true});
+    root.addEventListener('touchmove',  e=>{ dx = e.touches[0].clientX - startX; }, {passive:true});
+    root.addEventListener('touchend',  ()=>{ if (Math.abs(dx)>50) (dx<0?next():prev()); });
 
     show(); start();
   }
